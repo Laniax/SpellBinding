@@ -1,15 +1,10 @@
 ## Interface: 11302
 ## Title: |cff69ccf0Spell|cffffe00aBinding
-## Version: 1.0.0
+## Version: 1.0.1
 ## Notes: Powerful Keybinding Tool
-## Author: Original by Lombra, ported to classic by Laniax
+## Author: Original by Lombra, ported to classic by Lan
 ## SavedVariables: SpellBindingDB
 ## SavedVariablesPerCharacter: SpellBindingPerCharDB
-## RequiredDeps: ClassicSpellRanks
-## X-Curse-Packaged-Version: 1.0.0
-## X-Curse-Project-Name: SpellBinding
-## X-Curse-Project-ID: spellbinding
-## X-Curse-Repository-ID: wow/spellbinding/mainline
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
