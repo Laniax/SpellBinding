@@ -1,3 +1,6 @@
+v1.0.2
+Bump version number for new patch
+
 v1.0.1
 Fix dependency
 
