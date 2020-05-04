@@ -495,11 +495,11 @@ function SpellBinding:GetActionString(action)
 	
 		local spellId = tonumber(ac:match("%d+"))
 		local name, rank = GetSpellInfo(spellId)
-	
+		rank = GetSpellSubtext(spellId)
 		action = action:gsub("%d+", name)
 		
 		if rank and IsSpellKnown(spellId) then
-			action = action .. "(Rank "..rank..")"
+			action = action .. "("..rank..")"
 		end
 	end
 	return action
@@ -534,9 +534,10 @@ local getName = {
 	
 		local id = tonumber(data)
 		local name, rank = GetSpellInfo(id)
+		rank = GetSpellSubtext(id)
 
 		if rank and IsSpellKnown(id) then			
-			return format("%s (rank #%d)", name, rank);
+			return format("%s (%s)", name, rank);
 		end
 				
 		return format("%s", name);
