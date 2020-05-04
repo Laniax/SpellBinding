@@ -33,7 +33,7 @@ BINDING_NAME_SPELLBINDING_TOGGLE = "Toggle SpellBinding frame"
 local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("SpellBinding", {
 	type = "launcher",
 	label = "SpellBinding",
-	icon = [[Interface\Icons\INV_Pet_LilSmokey2]],
+	icon = [[Interface\Icons\spell_nature_earthbind]],
 	OnClick = function(self, button)
 		ToggleFrame(frame)
 	end,
