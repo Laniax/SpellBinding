@@ -1,3 +1,8 @@
+v1.2.0
+Remove dependency, improve compatibility with other addons
+Fix icon and lua error
+- Thanks @Llamatron2112
+
 v1.1.1
 Fix spell rank for Bestial Wrath
 
