@@ -1,8 +1,8 @@
 ## Interface: 11303
 ## Title: |cff69ccf0Spell|cffffe00aBinding
-## Version: 1.1.1
+## Version: 1.1.2
 ## Notes: Powerful Keybinding Tool
-## Author: Original by Lombra, ported to classic by Lan
+## Author: Original by Lombra, ported to classic by Lan, fixed by Llamatron
 ## SavedVariables: SpellBindingDB
 ## SavedVariablesPerCharacter: SpellBindingPerCharDB
 
@@ -10,7 +10,6 @@ Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\AceDB-3.0\AceDB-3.0.lua
-Libs\ClassicSpellRanks\ClassicSpellRanks.lua
 Libs\Libra\Libra.xml
 
 Core.lua

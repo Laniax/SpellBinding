@@ -33,7 +33,7 @@ BINDING_NAME_SPELLBINDING_TOGGLE = "Toggle SpellBinding frame"
 local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("SpellBinding", {
 	type = "launcher",
 	label = "SpellBinding",
-	icon = [[Interface\Icons\INV_Pet_LilSmokey2]],
+	icon = [[Interface\Icons\spell_nature_earthbind]],
 	OnClick = function(self, button)
 		ToggleFrame(frame)
 	end,
@@ -494,12 +494,12 @@ function SpellBinding:GetActionString(action)
 	if ac then
 	
 		local spellId = tonumber(ac:match("%d+"))
-		local name, rank = GetSpellInfo(spellId)
-	
+		local name, _ = GetSpellInfo(spellId)
+		local rank = GetSpellSubtext(spellId)
 		action = action:gsub("%d+", name)
 		
-		if rank and IsSpellKnown(spellId) then
-			action = action .. "(Rank "..rank..")"
+		if rank and rank ~= "" and IsSpellKnown(spellId) then
+			action = action .. "("..rank..")"
 		end
 	end
 	return action
@@ -533,10 +533,11 @@ local getName = {
 	SPELL = function(data)
 	
 		local id = tonumber(data)
-		local name, rank = GetSpellInfo(id)
+		local name, _ = GetSpellInfo(id)
+		local rank = GetSpellSubtext(id)
 
-		if rank and IsSpellKnown(id) then			
-			return format("%s (rank #%d)", name, rank);
+		if rank and rank ~= "" and IsSpellKnown(id) then			
+			return format("%s (%s)", name, rank);
 		end
 				
 		return format("%s", name);
