@@ -1,5 +1,5 @@
 local Libra = LibStub("Libra")
-local Type, Version = "Addon", 3
+local Type, Version = "Addon", 4
 if Libra:GetModuleVersion(Type) >= Version then return end
 
 Libra.modules[Type] = Libra.modules[Type] or {}
@@ -9,6 +9,7 @@ object.frame = object.frame or CreateFrame("Frame")
 object.addons = object.addons or {}
 object.events = object.events or {}
 object.onUpdates = object.onUpdates or {}
+object.defaults = object.defaults or {}
 
 local function safecall(object, method, ...)
 	if object[method] then
@@ -16,7 +17,21 @@ local function safecall(object, method, ...)
 	end
 end
 
+local function removeDefaults(tbl, defaults)
+	for k, v in pairs(defaults) do
+		if type(v) == "table" then
+			removeDefaults(tbl[k], v)
+			if not next(tbl[k]) then
+				tbl[k] = nil
+			end
+		elseif v == tbl[k] then
+			tbl[k] = nil
+		end
+	end
+end
+
 object.frame:RegisterEvent("ADDON_LOADED")
+object.frame:RegisterEvent("PLAYER_LOGOUT")
 object.frame:SetScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" then
 		local addon = object.addons[...]
@@ -27,6 +42,11 @@ object.frame:SetScript("OnEvent", function(self, event, ...)
 				safecall(module, "OnInitialize")
 				module.OnInitialize = nil
 			end
+		end
+	end
+	if event == "PLAYER_LOGOUT" then
+		for tbl, defaults in pairs(object.defaults) do
+			removeDefaults(tbl, defaults)
 		end
 	end
 	for module, eventHandler in pairs(object.events[event]) do
@@ -40,13 +60,15 @@ local function onUpdate(self, elapsed)
 	end
 end
 
-setmetatable(object.events, {
+local mt = {
 	__index = function(table, key)
 		local newTable = {}
 		table[key] = newTable
 		return newTable
 	end
-})
+}
+
+setmetatable(object.events, mt)
 
 local AddonPrototype = {}
 local ObjectPrototype = {}
@@ -71,6 +93,7 @@ function Libra:NewAddon(name, addonObject)
 	local addon = addonObject or {}
 	addon.name = name
 	addon.modules = {}
+	addon.messages = setmetatable({}, mt)
 	AddonEmbed(addon)
 	ObjectEmbed(addon)
 	object.addons[name] = addon
@@ -89,6 +112,7 @@ function AddonPrototype:NewModule(name, table)
 	local module = table or {}
 	ObjectEmbed(module)
 	module.name = name
+	module.messages = setmetatable({}, mt)
 	tinsert(self.modules, module)
 	safecall(self, "OnModuleCreated", name, module)
 	return module, name
@@ -106,6 +130,27 @@ function AddonPrototype:IterateModules()
 	return next, self.modules
 end
 
+local function copyDefaults(src, dst)
+	if not src then return {} end
+	if not dst then dst = {} end
+	for k, v in pairs(src) do
+		if type(v) == "table" then
+			dst[k] = copyDefaults(v, dst[k])
+		elseif type(v) ~= type(dst[k]) then
+			dst[k] = v
+		end
+	end
+	return dst
+end
+
+function AddonPrototype:CreateDB(global, defaults)
+	local db = _G[global]
+	db = copyDefaults(defaults, db)
+	_G[global] = db
+	object.defaults[db] = defaults
+	return db
+end
+
 function ObjectPrototype:RegisterEvent(event, handler)
 	if not next(object.events[event]) then
 		object.frame:RegisterEvent(event)
@@ -121,6 +166,23 @@ function ObjectPrototype:UnregisterEvent(event)
 	if not next(object.events[event]) then
 		object.frame:UnregisterEvent(event)
 	end
+end
+
+function ObjectPrototype:SendMessage(message, ...)
+	for module, messageHandler in pairs(self.messages[message]) do
+		messageHandler(module, ...)
+	end
+end
+
+function ObjectPrototype:RegisterMessage(module, message, handler)
+	if type(handler) ~= "function" then
+		handler = module[handler] or module[message]
+	end
+	self.messages[message][module] = handler
+end
+
+function ObjectPrototype:UnregisterMessage(module, message)
+	self.messages[message][module] = nil
 end
 
 function ObjectPrototype:SetOnUpdate(handler)

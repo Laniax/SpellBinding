@@ -47,7 +47,7 @@ local backdrop = {
 }
 
 function SpellBinding:CreateOverlay(parent, isBindingOverlay)
-	local overlay = CreateFrame(isBindingOverlay and "Button" or "Frame", nil, parent)
+	local overlay = CreateFrame(isBindingOverlay and "Button" or "Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
 	overlay:SetPoint("TOPLEFT", 0, -21)
 	overlay:SetPoint("BOTTOMRIGHT")
 	overlay:SetFrameStrata("HIGH")
